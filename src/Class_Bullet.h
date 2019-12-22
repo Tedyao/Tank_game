@@ -10,7 +10,8 @@ class Class_Bullet
 private:
 	UnitType owner;
 	int speed = map_px / 2;
-	IMAGE bullets[4], bullets_hide[4];
+	static IMAGE bullets[4];
+	static IMAGE bullets_hide[4];
 	Direction direction;
 public:
 	
@@ -80,7 +81,7 @@ inline boolean Class_Bullet::bulletTouch(Class_Map& map)
 	int m_Col = getX() / map_px;
 	int m_Row = getY() / map_px;
 	MapInt check1 = map.getVal({ m_Row, m_Col });
-	return check1 != EMPTY && check1 != JUNGLE && check1 != ICE;
+	return check1 != EMPTY && check1 != JUNGLE && check1 != ICE && check1 != SEA;
 
 }
 

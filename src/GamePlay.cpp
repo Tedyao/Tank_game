@@ -1,12 +1,12 @@
 #include "GamePlay.h"
 
 GamePlay::GamePlay(int computer_num)
-	:player(Class_Player(26, 18, P1, NORMAL, UP)), map(Class_Map()), computer_number(computer_num), commander(Commander())
+	:player(Class_Player(26, 18, P1, NORMAL, UP, playerMedianLife, shortShootInterval, fastSpeed)), map(Class_Map()), computer_number(computer_num), commander(Commander(playerHighLife, longShootInterval, slowSpeed))
 {
 	int cnt = 0;
 	int line = 2;
 	for (int i = 1; i <= computer_number; i++, cnt++) {
-		computers.push_back(new ComputerPlayer(line, 4 * cnt + 2, CP, NORMAL, LEFT));
+		computers.push_back(new ComputerPlayer(line, 4 * cnt + 2, CP, NORMAL, LEFT, lowLife, superLongShootIntervel, slowSpeed));
 		if (i % 4 == 0)
 		{
 			line += 2;
@@ -20,6 +20,7 @@ GamePlay::~GamePlay()
 {
 	for (Class_Bullet* bullet : bullets) delete bullet;
 	for (ComputerPlayer* computer : computers) delete computer;
+	for (Boom* boom : booms) delete boom;
 
 }
 

@@ -49,14 +49,14 @@ inline boolean Class_Map::seeThrough(const pos_Map& p1, const pos_Map& p2, Direc
 	{
 	case UP:
 		for (int i = p2.row + 1; i < p1.row - 1; i++) {
-			if (getVal({ i, p1.col }) != EMPTY) max_wall--;
+			if (getVal({ i, p1.col }) != EMPTY && getVal({ i, p1.col }) != SEA && getVal({ i, p1.col }) != ICE) max_wall--;
 			if (max_wall < 0) return false;
 		}
 		return true;
 		break;
 	case LEFT:
 		for (int i = p2.col + 1; i < p1.col - 1; i++) {
-			if (getVal({ p1.row, i }) != EMPTY) max_wall--;
+			if (getVal({ p1.row, i }) != EMPTY && getVal({ p1.row, i }) != SEA && getVal({ p1.row, i }) != ICE) max_wall--;
 			if (max_wall < 0) return false;
 			
 		}
@@ -64,14 +64,14 @@ inline boolean Class_Map::seeThrough(const pos_Map& p1, const pos_Map& p2, Direc
 		break;
 	case DOWN:
 		for (int i = p1.row + 1; i < p2.row - 1; i++) {
-			if (getVal({ i, p1.col }) != EMPTY) max_wall--;
+			if (getVal({ i, p1.col }) != EMPTY && getVal({ i, p1.col }) != SEA && getVal({ i, p1.col }) != ICE) max_wall--;
 			if (max_wall < 0) return false;
 		}
 		return true;
 		break;
 	case RIGHT:
 		for (int i = p1.col + 1; i < p2.col - 1; i++) {
-			if (getVal({ p1.row, i }) != EMPTY) max_wall--;
+			if (getVal({ p1.row, i }) != EMPTY && getVal({ p1.row, i }) != SEA && getVal({ p1.row, i }) != ICE) max_wall--;
 			if (max_wall < 0) return false;
 		}
 		return true;

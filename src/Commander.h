@@ -8,7 +8,7 @@ private:
 	IMAGE commander[2];
 	IMAGE commander_hide[2];
 public:
-	Commander();
+	Commander(int life, int shootInterval, int speed);
 	~Commander();
 	void load();
 	void show();

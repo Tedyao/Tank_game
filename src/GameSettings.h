@@ -65,6 +65,26 @@ enum Speed//每次刷新时物体应移动的像素数
 	VeryHighSpeed = 2 * HighSpeed
 };
 
+
+const int slowSpeed = map_px / 8;
+const int medianSpeed = map_px / 8;
+const int fastSpeed = map_px / 4;
+const int superSpeed = map_px / 2;
+
+
+const int lowLife = 5;
+const int medianLife = 15;
+const int highLife = 30;
+const int playerLowLife = 50;
+const int playerMedianLife = 100;
+const int playerHighLife = 150;
+
+
+const int shortShootInterval = 100;
+const int medianShootInterval = 200;
+const int longShootInterval = 300;
+const int superLongShootIntervel = 400;
+
 /***************
 各单位的相关参数
 ***************/
@@ -88,6 +108,7 @@ enum UnitType//各单位类型值，用于碰撞检测
 	P2 = 400,//2号玩家
 	CP = 600,//敌人
 	COMMANDER = 0xC8,//指挥官
+	BOOM,
 };
 enum Direction//方向，绘制、开炮时用
 {

@@ -1,7 +1,8 @@
 #include "Class_Player.h"
 #include "GameSettings.h"
 
-
+IMAGE Class_Player::img[ArmorCount][DirectionCount][2];
+IMAGE Class_Player::img_hide[ArmorCount][DirectionCount];
 
 
 Class_Player::Class_Player(int mRow, int mCol, UnitType type, Armor armorLevel, Direction direction, int life, DWORD shootInterval, int speed)

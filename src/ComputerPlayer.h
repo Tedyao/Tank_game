@@ -14,6 +14,9 @@ struct sm
 class ComputerPlayer
 	:public Class_Player
 {
+private:
+	static IMAGE pri_img[ArmorCount][DirectionCount][2];
+	static IMAGE pri_img_hide[ArmorCount][DirectionCount];
 public:
 	std::default_random_engine e;
 	std::uniform_int_distribution<unsigned> randomDirection;
@@ -23,7 +26,8 @@ public:
 	boolean isAlive();
 	sm seen_movable(const Class_Unit& player, const Class_Map& map, Direction direction) const;
 	virtual void load();
-	ComputerPlayer(int m_Row, int m_Col, UnitType type, Armor armor, Direction direction);
+	virtual void show();
+	ComputerPlayer(int m_Row, int m_Col, UnitType type, Armor armor, Direction direction, int life, int shootInterval, int speed);
 
 };
 

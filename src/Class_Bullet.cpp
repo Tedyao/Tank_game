@@ -1,5 +1,8 @@
 #include "Class_Bullet.h"
 
+IMAGE Class_Bullet::bullets[4];
+IMAGE Class_Bullet::bullets_hide[4];
+
 Class_Bullet::Class_Bullet(int mRow, int mCol, UnitType type, Direction direction, UnitType owner)
 	:Class_Unit(mRow, mCol, type), direction(direction), owner(owner)
 {

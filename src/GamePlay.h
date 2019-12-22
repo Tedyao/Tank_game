@@ -13,6 +13,7 @@
 #include "Class_Bullet.h"
 #include "ComputerPlayer.h"
 #include "Commander.h"
+#include "Boom.h"
 
 #define KEY_DOWN(KEY) (GetAsyncKeyState(KEY) & 0x8000)
 
@@ -25,6 +26,7 @@ private:
 	Class_Map map;
 	std::vector<Class_Bullet*> bullets;
 	std::vector<ComputerPlayer*> computers;
+	std::vector<Boom*> booms;
 
 public:
 	GamePlay(int computer_num);
@@ -103,6 +105,7 @@ inline boolean GamePlay::isHit(Class_Bullet* bullet, Class_Player* computer)
 
 inline void GamePlay::show()
 {
+	map.show();
 	for (ComputerPlayer* computer : computers) {
 		sm res = computer->nextStep(map, player, commander);
 		if (res.seen)
@@ -113,16 +116,24 @@ inline void GamePlay::show()
 		if (res.moveable) computer->move();
 		computer->show();
 	}
-	map.show();
 	player.show();
 	commander.setDireciton(UP);
 	commander.show();
 	auto it = bullets.begin();
 	for (it; it != bullets.end(); ) {
+		Direction direction = (*it)->getDirection();
+
+		int up_offset = 1;
+		int left_offset = 1;
+		if (direction == LEFT) left_offset = 0;
+		if (direction == UP) up_offset = 0;
+
 		if ((*it)->getX() < 2 * map_px || (*it)->getX() >= map_wide - 4 * map_px || (*it)->getY() < map_px * 2 || (*it)->getY() >= map_height - map_px * 2)
 		{
+			booms.push_back(new Boom((*it)->getY() / map_px - up_offset, (*it)->getX() / map_px - left_offset));
 			delete* it;
 			it = bullets.erase(it);
+			
 		}
 		else if (!(*it)->bulletTouch(map))
 		{
@@ -160,6 +171,7 @@ inline void GamePlay::show()
 				it++;
 			}
 			else {
+				booms.push_back(new Boom((*it)->getY() / map_px - up_offset, (*it)->getX() / map_px - left_offset));
 				delete* it;
 				it = bullets.erase(it);
 			}
@@ -167,6 +179,7 @@ inline void GamePlay::show()
 		else {
 			// If bullets are touching some object...
 			(*it)->destory(map);
+			booms.push_back(new Boom((*it)->getY() / map_px - up_offset, (*it)->getX() / map_px - left_offset));
 			delete* it;
 			it = bullets.erase(it);
 		}
@@ -177,8 +190,27 @@ inline void GamePlay::show()
 	auto c_iter = computers.begin();
 	for (c_iter; c_iter != computers.end(); )
 	{
-		if (!(*c_iter)->isAlive()) c_iter = computers.erase(c_iter);
+		if (!(*c_iter)->isAlive())
+		{
+			delete* c_iter;
+			c_iter = computers.erase(c_iter);
+		}
 		else c_iter++;
+	}
+
+	auto b_iter = booms.begin();
+	for (b_iter; b_iter != booms.end(); )
+	{
+		if ((*b_iter)->getPhase() > 4)
+		{
+			delete* b_iter;
+			b_iter = booms.erase(b_iter);
+		}
+		else
+		{
+			(*b_iter)->show();
+			b_iter++;
+		}
 	}
 
 	map.show_tree();

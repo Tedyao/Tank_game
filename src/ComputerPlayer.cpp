@@ -2,9 +2,11 @@
 #include <cmath>
 #include <ctime>
 
+IMAGE ComputerPlayer::pri_img[ArmorCount][DirectionCount][2];
+IMAGE ComputerPlayer::pri_img_hide[ArmorCount][DirectionCount];
 
-ComputerPlayer::ComputerPlayer(int m_Row, int m_Col, UnitType type, Armor armor, Direction direction)
-	:Class_Player(m_Row, m_Col, type, armor, direction, 15, 400, map_px / 8)
+ComputerPlayer::ComputerPlayer(int m_Row, int m_Col, UnitType type, Armor armor, Direction direction, int life, int shootInterval, int speed)
+	:Class_Player(m_Row, m_Col, type, armor, direction, life, shootInterval, speed)
 {
 	srand((int)time(0));
 	load();
@@ -80,23 +82,24 @@ sm ComputerPlayer::seen_movable(const Class_Unit& player, const Class_Map& map, 
 sm ComputerPlayer::nextStep(const Class_Map& map, const Class_Unit& player,  const Class_Player& commander) 
 {
 	this->setDireciton(getDirection());
-	std::vector<Direction> validDirections;
-	if (!isTouch(map, LEFT)) validDirections.push_back(LEFT);
-	if (!isTouch(map, RIGHT)) validDirections.push_back(RIGHT);
-	if (!isTouch(map, UP)) validDirections.push_back(UP);
-	if (!isTouch(map, DOWN)) validDirections.push_back(DOWN);
+	std::vector<Direction> validDirections; // finding valid directions towards which won't hit wall
+	validDirections.push_back(LEFT);
+	validDirections.push_back(RIGHT);
+	validDirections.push_back(UP);
+	validDirections.push_back(DOWN);
 	
 	
-	boolean touch = isTouch(map);
 
 	for (Direction direction : validDirections)
 	{
+		// wether can see player toward this direction
 		sm res = seen_movable(player, map, direction);
 		if (res.seen) {
 			setDireciton(direction);
-			if (touch) res.moveable = false;
+			if (isTouch(map)) res.moveable = false;
 			return res;
 		}
+		// wether can see commander toward this direction
 
 		else
 		{
@@ -104,7 +107,7 @@ sm ComputerPlayer::nextStep(const Class_Map& map, const Class_Unit& player,  con
 			res = seen_movable(commander, map, direction);
 			if (res.seen) {
 				setDireciton(direction);
-				if (touch) res.moveable = false;
+				if (isTouch(map)) res.moveable = false;
 				return res;
 			}
 
@@ -112,7 +115,9 @@ sm ComputerPlayer::nextStep(const Class_Map& map, const Class_Unit& player,  con
 
 	}
 
-	if (!touch)
+	// if can't see player or commander
+
+	if (!isTouch(map))
 	{
 		int prob = rand() % 100;
 		if (prob < 3) {
@@ -141,7 +146,7 @@ void ComputerPlayer::load()
 		{
 			for (size_t k = 0; k < 2; k++)
 			{
-				loadimage(&this->img[i][j][k], CP_FileName[i][j][k], unit_px, unit_px);
+				loadimage(&this->pri_img[i][j][k], CP_FileName[i][j][k], unit_px, unit_px);
 			}
 
 		}
@@ -151,9 +156,23 @@ void ComputerPlayer::load()
 	{
 		for (int j = 0; j < DirectionCount; j++)
 		{
-			loadimage(&this->img_hide[i][j], PlayerHide_FileName[i][j], unit_px, unit_px);
+			loadimage(&this->pri_img_hide[i][j], PlayerHide_FileName[i][j], unit_px, unit_px);
 
 
 		}
 	}
+}
+
+
+void ComputerPlayer::show()
+{
+	int x = getX();
+	int y = getY();
+	if (timeGetTime() - timer > 100)
+	{
+		timer = timeGetTime();
+		counter = (counter + 1) % 2;
+	}
+	putimage(x, y, &this->pri_img_hide[this->getArmorLevel()][this->getDirection()], SRCAND);
+	putimage(x, y, &this->pri_img[this->getArmorLevel()][this->getDirection()][counter], SRCPAINT);
 }
