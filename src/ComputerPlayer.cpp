@@ -1,12 +1,12 @@
 #include "ComputerPlayer.h"
 #include <cmath>
+#include <ctime>
 
 
 ComputerPlayer::ComputerPlayer(int m_Row, int m_Col, UnitType type, Armor armor, Direction direction)
-	:Class_Player(m_Row, m_Col, type, armor, direction, 10, 500, map_px / 8)
+	:Class_Player(m_Row, m_Col, type, armor, direction, 15, 400, map_px / 8)
 {
-	ComputerPlayer::randomDirection = std::uniform_int_distribution<unsigned>(0, 4);
-	randomChoice = std::uniform_int_distribution<unsigned>(0, 100);
+	srand((int)time(0));
 	load();
 }
 
@@ -22,48 +22,51 @@ boolean ComputerPlayer::isAlive()
 }
 
 
-sm ComputerPlayer::seen_movable(const Class_Player& player, const Class_Map& map, Direction direction) const
+sm ComputerPlayer::seen_movable(const Class_Unit& player, const Class_Map& map, Direction direction) const
 {
+	int max_wall = 0;
+	if (player.getType() == P1) max_wall = 0;
+	else max_wall = 3;
 	int this_mRow = get_mRow();
 	int this_mCol = get_mCol();
 	int player_mRow = player.get_mRow();
 	int player_mCol = player.get_mCol();
-	if (map.getVal({this_mRow, this_mCol}) == EMPTY && map.getVal({ player_mRow, player_mCol }) != EMPTY) return { false, false };
+	//if (map.getVal({this_mRow, this_mCol}) == EMPTY && map.getVal({ player_mRow, player_mCol }) != EMPTY) return { false, false };
 	switch (direction)
 	{
 	case UP:
-		if (abs(this_mCol - player_mCol) < 2 && this_mRow > player_mRow + 1
-			&& map.seeThrough({ this_mRow, this_mCol }, { player_mRow, player_mCol }, UP))
+		if (abs(this_mCol - player_mCol) < 1 && this_mRow > player_mRow + 1
+			&& map.seeThrough({ this_mRow, this_mCol }, { player_mRow, player_mCol }, UP, max_wall))
 		{
-			if (this_mRow - player_mRow > 3) return { true, true };
+			if (this_mRow - player_mRow > 2) return { true, true };
 			return { true, false };
 		}
 
 		else return { false, false };
 		break;
 	case LEFT:
-		if (abs(this_mRow - player_mRow) < 2 && this_mCol > player_mCol + 1
-			&& map.seeThrough({ this_mRow, this_mCol }, { player_mRow, player_mCol }, LEFT))
+		if (abs(this_mRow - player_mRow) < 1 && this_mCol > player_mCol + 1
+			&& map.seeThrough({ this_mRow, this_mCol }, { player_mRow, player_mCol }, LEFT, max_wall))
 		{
-			if (this_mCol - player_mCol > 3) return { true, true };
+			if (this_mCol - player_mCol > 2) return { true, true };
 			return { true, false };
 		}
 		else return { false, false };
 		break;
 	case DOWN:
-		if (abs(this_mCol - player_mCol) < 2 && this_mRow < player_mRow - 1
-			&& map.seeThrough({ this_mRow, this_mCol }, { player_mRow, player_mCol }, DOWN))
+		if (abs(this_mCol - player_mCol) < 1 && this_mRow < player_mRow - 1
+			&& map.seeThrough({ this_mRow, this_mCol }, { player_mRow, player_mCol }, DOWN, max_wall))
 		{
-			if (player_mRow - this_mRow > 3) return { true, true };
+			if (player_mRow - this_mRow > 2) return { true, true };
 			return { true, false };
 		}
 		else return { false, false };
 		break;
 	case RIGHT:
-		if (abs(this_mRow - player_mRow) < 2 && this_mCol < player_mCol
-			&& map.seeThrough({ this_mRow, this_mCol }, { player_mRow, player_mCol }, RIGHT))
+		if (abs(this_mRow - player_mRow) < 1 && this_mCol < player_mCol
+			&& map.seeThrough({ this_mRow, this_mCol }, { player_mRow, player_mCol }, RIGHT, max_wall))
 		{
-			if (player_mCol - this_mCol > 3) return { true, true };
+			if (player_mCol - this_mCol > 2) return { true, true };
 			return { true, false };
 		}
 		else return { false, false };
@@ -74,7 +77,7 @@ sm ComputerPlayer::seen_movable(const Class_Player& player, const Class_Map& map
 	}
 }
 
-sm ComputerPlayer::nextStep(const Class_Map& map, const Class_Player& player) 
+sm ComputerPlayer::nextStep(const Class_Map& map, const Class_Unit& player,  const Class_Player& commander) 
 {
 	this->setDireciton(getDirection());
 	std::vector<Direction> validDirections;
@@ -86,38 +89,46 @@ sm ComputerPlayer::nextStep(const Class_Map& map, const Class_Player& player)
 	
 	boolean touch = isTouch(map);
 
-	if (!touch) {
-		
-
-		for (Direction direction : validDirections)
-		{
-			sm res = seen_movable(player, map, direction);
-			if (res.seen) {
-				setDireciton(direction);
-				return res;
-			}
-			
+	for (Direction direction : validDirections)
+	{
+		sm res = seen_movable(player, map, direction);
+		if (res.seen) {
+			setDireciton(direction);
+			if (touch) res.moveable = false;
+			return res;
 		}
 
-		int prob = randomChoice(e);
-		if (prob < 5) {
-			
+		else
+		{
+
+			res = seen_movable(commander, map, direction);
+			if (res.seen) {
+				setDireciton(direction);
+				if (touch) res.moveable = false;
+				return res;
+			}
+
+		}
+
+	}
+
+	if (!touch)
+	{
+		int prob = rand() % 100;
+		if (prob < 3) {
+
 			int randNum = rand() % validDirections.size();
 			setDireciton(validDirections.at(randNum));
 		}
+		return { false, true };
 	}
 
 	else
 	{
-		if (validDirections.size() < 1)
-		{
-			setLife(0);
-			return { false, false };
-		}
 		int randNum = rand() % validDirections.size();
 		setDireciton(validDirections.at(randNum));
+		return { false, true };
 	}
-	return {false, false};
 	
 }
 

@@ -12,6 +12,7 @@
 #include <vector>
 #include "Class_Bullet.h"
 #include "ComputerPlayer.h"
+#include "Commander.h"
 
 #define KEY_DOWN(KEY) (GetAsyncKeyState(KEY) & 0x8000)
 
@@ -19,6 +20,7 @@ class GamePlay
 {
 private:
 	int computer_number;
+	Commander commander;
 	Class_Player player;
 	Class_Map map;
 	std::vector<Class_Bullet*> bullets;
@@ -71,7 +73,17 @@ inline void GamePlay::displayInfo()
 	outtextxy(4 * map_px, 2 * map_px, m_row);
 	outtextxy(map_px, 3 * map_px, x_);
 	outtextxy(4 * map_px, 3 * map_px, y_);
+
+	TCHAR m_row[10];
+	TCHAR m_col[10];
+	swprintf(m_row, 10, _T("col: %d"), player.get_mCol());
+	swprintf(m_col, 10, _T("row: %d"), player.get_mRow());
+	outtextxy(3 * map_px, 4 * map_px, m_col);
+	outtextxy(6 * map_px, 4 * map_px, m_row);
+
 	*/
+	
+
 	TCHAR health_[12];
 	swprintf(health_, 12, _T("Health: %d"), player.getLife());
 	outtextxy(3 * map_px, 2 * map_px, health_);
@@ -91,21 +103,20 @@ inline boolean GamePlay::isHit(Class_Bullet* bullet, Class_Player* computer)
 
 inline void GamePlay::show()
 {
-	displayInfo();
 	for (ComputerPlayer* computer : computers) {
-		sm res = computer->nextStep(map, player);
+		sm res = computer->nextStep(map, player, commander);
 		if (res.seen)
 		{
 			Class_Bullet* bullet = computer->shoot();
 			if (bullet != nullptr) bullets.push_back(bullet);
-			if (res.moveable) computer->move();
-			
 		}
-		else computer->move();
+		if (res.moveable) computer->move();
 		computer->show();
 	}
 	map.show();
 	player.show();
+	commander.setDireciton(UP);
+	commander.show();
 	auto it = bullets.begin();
 	for (it; it != bullets.end(); ) {
 		if ((*it)->getX() < 2 * map_px || (*it)->getX() >= map_wide - 4 * map_px || (*it)->getY() < map_px * 2 || (*it)->getY() >= map_height - map_px * 2)
@@ -133,6 +144,11 @@ inline void GamePlay::show()
 				if (isHit(*it, &player))
 				{
 					player.decreaseLife();
+					flag = true;
+				}
+				else if (isHit(*it, &commander))
+				{
+					commander.decreaseLife();
 					flag = true;
 				}
 			}
@@ -166,6 +182,8 @@ inline void GamePlay::show()
 	}
 
 	map.show_tree();
+	displayInfo();
+
 	
 }
 

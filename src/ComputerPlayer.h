@@ -19,9 +19,9 @@ public:
 	std::uniform_int_distribution<unsigned> randomDirection;
 	std::uniform_int_distribution<unsigned> randomChoice;
 	~ComputerPlayer();
-	sm nextStep(const Class_Map& map, const Class_Player& player);
+	sm nextStep(const Class_Map& map, const Class_Unit& player, const Class_Player& commander);
 	boolean isAlive();
-	sm seen_movable(const Class_Player& player, const Class_Map& map, Direction direction) const;
+	sm seen_movable(const Class_Unit& player, const Class_Map& map, Direction direction) const;
 	virtual void load();
 	ComputerPlayer(int m_Row, int m_Col, UnitType type, Armor armor, Direction direction);
 

@@ -1,7 +1,7 @@
 #include "GamePlay.h"
 
 GamePlay::GamePlay(int computer_num)
-	:player(Class_Player(2, 16, P1, NORMAL, UP)), map(Class_Map()), computer_number(computer_num)
+	:player(Class_Player(26, 18, P1, NORMAL, UP)), map(Class_Map()), computer_number(computer_num), commander(Commander())
 {
 	int cnt = 0;
 	int line = 2;
@@ -33,7 +33,7 @@ void GamePlay::play()
 	BeginBatchDraw();
 	while (true)
 	{
-		if (player.getLife() < 1)
+		if (player.getLife() < 1 || commander.getLife() < 1)
 		{
 			cleardevice();
 			gameOver();
