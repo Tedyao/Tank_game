@@ -67,7 +67,11 @@ inline void Class_Bullet::destory(Class_Map& map)
 
 	int m_Col = getX() / map_px;
 	int m_Row = getY() / map_px;
-	map.setVal({m_Row, m_Col}, EMPTY);
+	if (map.getVal({ m_Row, m_Col }) != JUNGLE && map.getVal({ m_Row, m_Col }) != ICE)
+	{
+		map.setVal({ m_Row, m_Col }, EMPTY);
+	}
+	
 
 }
 
@@ -75,7 +79,8 @@ inline boolean Class_Bullet::bulletTouch(Class_Map& map)
 {
 	int m_Col = getX() / map_px;
 	int m_Row = getY() / map_px;
-	return map.getVal({ m_Row, m_Col }) != EMPTY;
+	MapInt check1 = map.getVal({ m_Row, m_Col });
+	return check1 != EMPTY && check1 != JUNGLE && check1 != ICE;
 
 }
 

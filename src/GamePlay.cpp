@@ -40,6 +40,14 @@ void GamePlay::play()
 			FlushBatchDraw();
 			Sleep(1000000);
 		}
+
+		if (computers.size() < 1)
+		{
+			cleardevice();
+			win();
+			FlushBatchDraw();
+			Sleep(1000000);
+		}
 		cleardevice();
 
 		if (KEY_DOWN(VK_LEFT) || KEY_DOWN('A')) {

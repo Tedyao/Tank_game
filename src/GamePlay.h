@@ -33,13 +33,20 @@ public:
 	void show();
 	boolean isHit(Class_Bullet* bullet, Class_Player* computer);
 	void gameOver();
-
+	void win();
 };
 
 
 inline void GamePlay::gameOver()
 {
-	outtextxy(map_wide / 2, map_height / 2, _T("GAME OVER"));
+	
+	outtextxy(map_wide / 2, map_height / 2, _T("GAME OVER: YOU LOSE"));
+}
+
+inline void GamePlay::win()
+{
+	outtextxy(map_wide / 2, map_height / 2, _T("GAME OVER: YOU WIN!"));
+
 }
 
 
@@ -147,6 +154,7 @@ inline void GamePlay::show()
 			delete* it;
 			it = bullets.erase(it);
 		}
+		
 
 	}
 
@@ -156,6 +164,8 @@ inline void GamePlay::show()
 		if (!(*c_iter)->isAlive()) c_iter = computers.erase(c_iter);
 		else c_iter++;
 	}
+
+	map.show_tree();
 	
 }
 

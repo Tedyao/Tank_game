@@ -18,6 +18,7 @@ public:
 	MapInt getVal(const pos_Map& pos) const;
 	void setVal(const pos_Map& pos, MapType type);
 	void show();
+	void show_tree();
 	void loadMapPic(const wchar_t* const mapPicPath[7]);
 	boolean seeThrough(const pos_Map& pos1, const pos_Map& pos2, Direction direction) const;
 	

@@ -28,6 +28,7 @@ sm ComputerPlayer::seen_movable(const Class_Player& player, const Class_Map& map
 	int this_mCol = get_mCol();
 	int player_mRow = player.get_mRow();
 	int player_mCol = player.get_mCol();
+	if (map.getVal({this_mRow, this_mCol}) == EMPTY && map.getVal({ player_mRow, player_mCol }) != EMPTY) return { false, false };
 	switch (direction)
 	{
 	case UP:

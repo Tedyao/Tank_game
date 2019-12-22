@@ -190,7 +190,7 @@ inline boolean Class_Tank::isTouch(const Class_Map& map, Direction direction)
 		break;
 	}
 
-	return (check1 != EMPTY) || (check2 != EMPTY);
+	return (check1 != EMPTY && check1 != JUNGLE && check1 != ICE) || (check2 != EMPTY && check2 != JUNGLE && check2 != ICE);
 }
 
 inline boolean Class_Tank::isTouch(const Class_Map& map)
