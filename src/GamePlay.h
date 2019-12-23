@@ -14,6 +14,8 @@
 #include "ComputerPlayer.h"
 #include "Commander.h"
 #include "Boom.h"
+#include "ctime"
+#include "random"
 
 #define KEY_DOWN(KEY) (GetAsyncKeyState(KEY) & 0x8000)
 
@@ -21,12 +23,15 @@ class GamePlay
 {
 private:
 	int computer_number;
+	DWORD spawnTimer;
+	boolean waitForSpawn;
 	Commander commander;
 	Class_Player player;
 	Class_Map map;
 	std::vector<Class_Bullet*> bullets;
 	std::vector<ComputerPlayer*> computers;
 	std::vector<Boom*> booms;
+
 
 public:
 	GamePlay(int computer_num);
@@ -36,6 +41,7 @@ public:
 	void controlLoop();
 	void computersLoop();
 	void bulletsLoop();
+	void spawnEnemy();
 	void move();
 	void show();
 	boolean isHit(Class_Bullet* bullet, Class_Player* computer);
@@ -43,6 +49,28 @@ public:
 	void win();
 };
 
+
+inline void GamePlay::spawnEnemy()
+{
+	int number = 0;
+	while (number < 1)
+	{
+		number = rand() % computer_number;
+	}
+	if (computers.size() < 1)
+	{
+		int cnt = 0;
+		int line = 2;
+		for (int i = 1; i <= number; i++, cnt++) {
+			computers.push_back(new ComputerPlayer(line, 4 * cnt + 2, CP, NORMAL, LEFT, lowLife, superLongShootIntervel, slowSpeed));
+			if (i % 4 == 0)
+			{
+				line += 2;
+				cnt = 0;
+			}
+		}
+	}
+}
 
 inline void GamePlay::gameOver()
 {
@@ -195,7 +223,7 @@ inline void GamePlay::bulletsLoop()
 				it++;
 			}
 			else {
-				booms.push_back(new Boom((*it)->getY() / map_px - up_offset, (*it)->getX() / map_px - left_offset));
+				booms.push_back(new Boom((*it)->getY() / map_px - up_offset, (*it)->getX() / map_px - left_offset, 5));
 				delete* it;
 				it = bullets.erase(it);
 			}
@@ -203,7 +231,7 @@ inline void GamePlay::bulletsLoop()
 		else {
 			// If bullets are touching some object...
 			(*it)->destory(map);
-			booms.push_back(new Boom((*it)->getY() / map_px - up_offset, (*it)->getX() / map_px - left_offset));
+			booms.push_back(new Boom((*it)->getY() / map_px - up_offset, (*it)->getX() / map_px - left_offset, 3));
 			delete* it;
 			it = bullets.erase(it);
 		}
@@ -245,7 +273,7 @@ inline void GamePlay::show()
 	auto b_iter = booms.begin();
 	for (b_iter; b_iter != booms.end(); )
 	{
-		if ((*b_iter)->getPhase() > 4)
+		if ((*b_iter)->isFinshed())
 		{
 			delete* b_iter;
 			b_iter = booms.erase(b_iter);

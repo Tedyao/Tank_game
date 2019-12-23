@@ -3,8 +3,8 @@
 IMAGE Boom::boom[5];
 IMAGE Boom::boom_hide[5];
 
-Boom::Boom(int m_row, int m_col)
-	:Class_Unit(m_row, m_col, BOOM), boomTimer(timeGetTime()), phase(0)
+Boom::Boom(int m_row, int m_col, int boomSize)
+	:Class_Unit(m_row, m_col, BOOM), boomTimer(timeGetTime()), phase(0), boomSize(boomSize)
 {
 	load();
 }

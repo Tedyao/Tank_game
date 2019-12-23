@@ -1,19 +1,13 @@
 #include "GamePlay.h"
 
 GamePlay::GamePlay(int computer_num)
-	:player(Class_Player(26, 18, P1, NORMAL, UP, playerMedianLife, shortShootInterval, fastSpeed)), map(Class_Map()), computer_number(computer_num), commander(Commander(playerHighLife, longShootInterval, slowSpeed))
+	:player(Class_Player(26, 18, P1, NORMAL, UP, playerMedianLife, shortShootInterval, fastSpeed)), map(Class_Map()), computer_number(computer_num), commander(Commander(playerHighLife, longShootInterval, slowSpeed)), waitForSpawn(true)
 {
-	int cnt = 0;
-	int line = 2;
-	for (int i = 1; i <= computer_number; i++, cnt++) {
-		computers.push_back(new ComputerPlayer(line, 4 * cnt + 2, CP, NORMAL, LEFT, lowLife, superLongShootIntervel, slowSpeed));
-		if (i % 4 == 0)
-		{
-			line += 2;
-			cnt = 0;
-		}
-	}
-
+	srand((int)time(0));
+	
+	spawnEnemy();
+	waitForSpawn = false;
+	
 }
 
 GamePlay::~GamePlay()
@@ -44,10 +38,17 @@ void GamePlay::play()
 
 		if (computers.size() < 1)
 		{
-			cleardevice();
-			win();
-			FlushBatchDraw();
-			Sleep(1000000);
+			if (!waitForSpawn)
+			{
+				waitForSpawn = true;
+				spawnTimer = timeGetTime();
+			}
+			if (waitForSpawn && timeGetTime() - spawnTimer > 3000)
+			{
+				spawnEnemy();
+				waitForSpawn = false;
+			}
+			
 		}
 		cleardevice();
 

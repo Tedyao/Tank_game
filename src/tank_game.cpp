@@ -14,7 +14,7 @@
 int main()
 {
 
-	GamePlay play = GamePlay(10);
+	GamePlay play = GamePlay(8);
 	play.play();
 	
 }
