@@ -68,7 +68,7 @@ inline void Class_Bullet::destory(Class_Map& map)
 
 	int m_Col = getX() / map_px;
 	int m_Row = getY() / map_px;
-	if (map.getVal({ m_Row, m_Col }) != JUNGLE && map.getVal({ m_Row, m_Col }) != ICE && map.getVal({m_Row, m_Col}) != IRON)
+	if (map.getVal({ m_Row, m_Col }) != JUNGLE && map.getVal({ m_Row, m_Col }) != ICE && map.getVal({m_Row, m_Col}) != IRON && map.getVal({ m_Row, m_Col }) != BORDER)
 	{
 		map.setVal({ m_Row, m_Col }, EMPTY);
 	}

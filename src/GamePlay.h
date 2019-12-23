@@ -33,6 +33,9 @@ public:
 	~GamePlay();
 	void play();
 	void displayInfo();
+	void controlLoop();
+	void computersLoop();
+	void bulletsLoop();
 	void move();
 	void show();
 	boolean isHit(Class_Bullet* bullet, Class_Player* computer);
@@ -103,9 +106,37 @@ inline boolean GamePlay::isHit(Class_Bullet* bullet, Class_Player* computer)
 	return row >= c_row && row <= c_row + 2 && col >= c_col && col <= c_col + 2;
 }
 
-inline void GamePlay::show()
+inline void GamePlay::controlLoop()
 {
-	map.show();
+	if (KEY_DOWN(VK_LEFT) || KEY_DOWN('A')) {
+		player.setDireciton(LEFT);
+		if (!player.isTouch(map)) player.move();
+	}
+	else if (KEY_DOWN(VK_RIGHT) || KEY_DOWN('D')) {
+		player.setDireciton(RIGHT);
+		if (!player.isTouch(map)) player.move();
+	}
+	else if (KEY_DOWN(VK_DOWN) || KEY_DOWN('S')) {
+		player.setDireciton(DOWN);
+		if (!player.isTouch(map)) player.move();
+
+
+	}
+	else if (KEY_DOWN(VK_UP) || KEY_DOWN('W')) {
+		player.setDireciton(UP);
+		if (!player.isTouch(map)) player.move();
+
+
+	}
+	else if (KEY_DOWN('J')) {
+		Class_Bullet* bullet = player.shoot();
+		if (bullet != nullptr) bullets.push_back(bullet);
+	}
+}
+
+inline void GamePlay::computersLoop()
+{
+	
 	for (ComputerPlayer* computer : computers) {
 		sm res = computer->nextStep(map, player, commander);
 		if (res.seen)
@@ -116,9 +147,10 @@ inline void GamePlay::show()
 		if (res.moveable) computer->move();
 		computer->show();
 	}
-	player.show();
-	commander.setDireciton(UP);
-	commander.show();
+}
+
+inline void GamePlay::bulletsLoop()
+{
 	auto it = bullets.begin();
 	for (it; it != bullets.end(); ) {
 		Direction direction = (*it)->getDirection();
@@ -128,14 +160,7 @@ inline void GamePlay::show()
 		if (direction == LEFT) left_offset = 0;
 		if (direction == UP) up_offset = 0;
 
-		if ((*it)->getX() < 2 * map_px || (*it)->getX() >= map_wide - 4 * map_px || (*it)->getY() < map_px * 2 || (*it)->getY() >= map_height - map_px * 2)
-		{
-			booms.push_back(new Boom((*it)->getY() / map_px - up_offset, (*it)->getX() / map_px - left_offset));
-			delete* it;
-			it = bullets.erase(it);
-			
-		}
-		else if (!(*it)->bulletTouch(map))
+		if (!(*it)->bulletTouch(map))
 		{
 
 			boolean flag = false;
@@ -144,9 +169,9 @@ inline void GamePlay::show()
 				for (ComputerPlayer* computer : computers) {
 					if (isHit(*it, computer)) {
 						computer->decreaseLife();
-						
+
 						flag = true;
-						
+
 					}
 				}
 			}
@@ -163,11 +188,10 @@ inline void GamePlay::show()
 					flag = true;
 				}
 			}
-			
+
 
 			if (!flag) {
 				(*it)->move();
-				(*it)->show();
 				it++;
 			}
 			else {
@@ -183,9 +207,21 @@ inline void GamePlay::show()
 			delete* it;
 			it = bullets.erase(it);
 		}
-		
+
 
 	}
+}
+
+inline void GamePlay::show()
+{
+	map.show();
+	commander.setDireciton(UP);
+
+	computersLoop();
+	bulletsLoop();	
+
+	player.show();
+	commander.show();
 
 	auto c_iter = computers.begin();
 	for (c_iter; c_iter != computers.end(); )
@@ -195,8 +231,16 @@ inline void GamePlay::show()
 			delete* c_iter;
 			c_iter = computers.erase(c_iter);
 		}
-		else c_iter++;
+		else
+		{
+			(*c_iter)->show();
+			c_iter++;
+		}
 	}
+
+	auto bu_iter = bullets.begin();
+	for (bu_iter; bu_iter != bullets.end(); bu_iter++) (*bu_iter)->show();
+
 
 	auto b_iter = booms.begin();
 	for (b_iter; b_iter != booms.end(); )

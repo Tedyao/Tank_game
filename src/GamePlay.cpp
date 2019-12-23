@@ -51,30 +51,7 @@ void GamePlay::play()
 		}
 		cleardevice();
 
-		if (KEY_DOWN(VK_LEFT) || KEY_DOWN('A')) {
-			player.setDireciton(LEFT);
-			if (!player.isTouch(map)) player.move();
-		}
-		else if (KEY_DOWN(VK_RIGHT) || KEY_DOWN('D')) {
-			player.setDireciton(RIGHT);
-			if (!player.isTouch(map)) player.move();
-		}
-		else if (KEY_DOWN(VK_DOWN) || KEY_DOWN('S')) {
-			player.setDireciton(DOWN);
-			if (!player.isTouch(map)) player.move();
-
-
-		}
-		else if (KEY_DOWN(VK_UP) || KEY_DOWN('W')) {
-			player.setDireciton(UP);
-			if (!player.isTouch(map)) player.move();
-
-
-		}
-		else if (KEY_DOWN('J')) {
-			Class_Bullet* bullet = player.shoot();
-			if (bullet != nullptr) bullets.push_back(bullet);
-		}
+		controlLoop();
 
 		show();
 		
