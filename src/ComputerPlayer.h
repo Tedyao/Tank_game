@@ -27,7 +27,7 @@ public:
 	sm seen_movable(const Class_Unit& player, const Class_Map& map, Direction direction) const;
 	virtual void load();
 	virtual void show();
-	ComputerPlayer(int m_Row, int m_Col, UnitType type, Armor armor, Direction direction, int life, int shootInterval, int speed);
+	ComputerPlayer(int m_Row, int m_Col, UnitType type, Armor armor, Direction direction, int shootInterval, int speed);
 
 };
 

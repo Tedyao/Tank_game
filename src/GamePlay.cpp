@@ -1,7 +1,7 @@
 #include "GamePlay.h"
 
 GamePlay::GamePlay(int computer_num)
-	:player(Class_Player(26, 18, P1, NORMAL, UP, playerMedianLife, shortShootInterval, fastSpeed)), map(Class_Map()), computer_number(computer_num), commander(Commander(playerHighLife, longShootInterval, slowSpeed)), waitForSpawn(true)
+	:player(Class_Player(26, 18, P1, STRONG, UP, medianShootInterval, medianSpeed)), map(Class_Map()), computer_number(computer_num), commander(Commander(playerHighLife, longShootInterval, slowSpeed)), waitForSpawn(true)
 {
 	srand((int)time(0));
 	
@@ -30,10 +30,24 @@ void GamePlay::play()
 	{
 		if (player.getLife() < 1 || commander.getLife() < 1)
 		{
-			cleardevice();
-			gameOver();
-			FlushBatchDraw();
-			Sleep(1000000);
+			while (!KEY_DOWN(VK_SPACE))
+			{
+				cleardevice();
+				gameOver();
+				FlushBatchDraw();
+			}
+			
+			map = Class_Map();
+			player = Class_Player(26, 18, P1, STRONG, UP, medianShootInterval, medianSpeed);
+			commander = Commander(playerHighLife, longShootInterval, slowSpeed);
+
+			auto iter = computers.begin();
+			while (iter != computers.end())
+			{
+				iter = computers.erase(iter);
+			}
+			spawnEnemy();
+
 		}
 
 		if (computers.size() < 1)

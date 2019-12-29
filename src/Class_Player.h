@@ -12,7 +12,7 @@ protected:
 	virtual void load();
 
 public:
-	Class_Player(int mRow = 2, int mCol = 2, UnitType type = P1, Armor armorLevel = NORMAL, Direction direction = UP, int life = playerMedianLife, DWORD shootInterval=100, int speed = fastSpeed);
+	Class_Player(int mRow = 2, int mCol = 2, UnitType type = P1, Armor armorLevel = NORMAL, Direction direction = UP, DWORD shootInterval=100, int speed = fastSpeed);
 	virtual void show();
 };
 

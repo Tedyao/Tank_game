@@ -19,7 +19,7 @@ private:
 	int life;
 public:
 	
-	Class_Tank(int mRow, int mCol, UnitType type, Armor armor, Direction direction, int life, DWORD shootInterval, int speed);
+	Class_Tank(int mRow, int mCol, UnitType type, Armor armor, Direction direction, DWORD shootInterval, int speed);
 	~Class_Tank();
 
 	// get functions
@@ -59,7 +59,7 @@ inline int Class_Tank::getLife() const
 
 inline void Class_Tank::setLife(int life)
 {
-	life = life;
+	this->life = life;
 }
 
 inline void Class_Tank::decreaseLife()

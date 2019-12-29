@@ -61,8 +61,17 @@ inline void GamePlay::spawnEnemy()
 	{
 		int cnt = 0;
 		int line = 2;
+		int prob = rand() % 100;
+		Armor armor = NORMAL;
 		for (int i = 1; i <= number; i++, cnt++) {
-			computers.push_back(new ComputerPlayer(line, 4 * cnt + 2, CP, NORMAL, LEFT, lowLife, superLongShootIntervel, slowSpeed));
+			prob = rand() % 100;
+			if (prob < 3) armor = HEAVY;
+			else if (prob < 10) armor = STRONG;
+			else if (prob < 30) armor = LIGHT;
+			else armor = NORMAL;
+
+			computers.push_back(new ComputerPlayer(line, 4 * cnt + 2, CP, armor, LEFT, superLongShootIntervel, slowSpeed));
+			if (armor == HEAVY || armor == STRONG) return;
 			if (i % 4 == 0)
 			{
 				line += 2;
@@ -122,7 +131,7 @@ inline void GamePlay::displayInfo()
 	outtextxy(3 * map_px, 2 * map_px, health_);
 	TCHAR enemy_[12];
 	swprintf(enemy_, 12, _T("Enemy: %d"), computers.size());
-	outtextxy(6 * map_px, 2 * map_px, enemy_);
+	outtextxy(7 * map_px, 2 * map_px, enemy_);
 }
 
 inline boolean GamePlay::isHit(Class_Bullet* bullet, Class_Player* computer)

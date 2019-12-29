@@ -5,11 +5,31 @@
 IMAGE ComputerPlayer::pri_img[ArmorCount][DirectionCount][2];
 IMAGE ComputerPlayer::pri_img_hide[ArmorCount][DirectionCount];
 
-ComputerPlayer::ComputerPlayer(int m_Row, int m_Col, UnitType type, Armor armor, Direction direction, int life, int shootInterval, int speed)
-	:Class_Player(m_Row, m_Col, type, armor, direction, life, shootInterval, speed)
+ComputerPlayer::ComputerPlayer(int m_Row, int m_Col, UnitType type, Armor armor, Direction direction, int shootInterval, int speed)
+	:Class_Player(m_Row, m_Col, type, armor, direction, shootInterval, speed)
 {
 	srand((int)time(0));
 	load();
+	switch (armor)
+	{
+	case DEAD:
+		setLife(0);
+		break;
+	case NORMAL:
+		setLife(lowLife);
+		break;
+	case LIGHT:
+		setLife(medianLife);
+		break;
+	case STRONG:
+		setLife(highLife);
+		break;
+	case HEAVY:
+		setLife(playerLowLife);
+		break;
+	default:
+		break;
+	}
 }
 
 ComputerPlayer::~ComputerPlayer()

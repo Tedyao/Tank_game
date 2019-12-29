@@ -2,10 +2,10 @@
 #include "GameSettings.h"
 
 
-Class_Tank::Class_Tank(int mRow, int mCol, UnitType type, Armor armorLevel, Direction direction, int life, DWORD shootInterval, int speed)
-	:Class_Unit(mRow, mCol, type), direction(direction), armorLevel(armorLevel), shootTime(timeGetTime()), life(life), bullet_interval(shootInterval), speed(speed)
+Class_Tank::Class_Tank(int mRow, int mCol, UnitType type, Armor armorLevel, Direction direction, DWORD shootInterval, int speed)
+	:Class_Unit(mRow, mCol, type), direction(direction), armorLevel(armorLevel), shootTime(timeGetTime()), bullet_interval(shootInterval), speed(speed), life(0)
 {
-
+	
 }
 
 Class_Bullet* Class_Tank::shoot()

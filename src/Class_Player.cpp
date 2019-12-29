@@ -5,13 +5,32 @@ IMAGE Class_Player::img[ArmorCount][DirectionCount][2];
 IMAGE Class_Player::img_hide[ArmorCount][DirectionCount];
 
 
-Class_Player::Class_Player(int mRow, int mCol, UnitType type, Armor armorLevel, Direction direction, int life, DWORD shootInterval, int speed)
-	:Class_Tank(mRow, mCol, type, armorLevel, direction, life, shootInterval, speed)
+Class_Player::Class_Player(int mRow, int mCol, UnitType type, Armor armorLevel, Direction direction, DWORD shootInterval, int speed)
+	:Class_Tank(mRow, mCol, type, armorLevel, direction, shootInterval, speed)
 {
 	timer = timeGetTime();
 	counter = 0;
 	load();
-	
+	switch (armorLevel)
+	{
+	case DEAD:
+		setLife(0);
+		break;
+	case NORMAL:
+		setLife(playerLowLife);
+		break;
+	case LIGHT:
+		setLife(playerMedianLife);
+		break;
+	case STRONG:
+		setLife(playerHighLife);
+		break;
+	case HEAVY:
+		setLife(playerSuperLife);
+		break;
+	default:
+		break;
+	}
 }
 
 

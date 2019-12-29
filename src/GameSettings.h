@@ -67,8 +67,8 @@ enum Speed//每次刷新时物体应移动的像素数
 
 
 const int slowSpeed = map_px / 8;
-const int medianSpeed = map_px / 8;
-const int fastSpeed = map_px / 4;
+const int medianSpeed = map_px / 4;
+const int fastSpeed = map_px / 3;
 const int superSpeed = map_px / 2;
 
 
@@ -78,6 +78,7 @@ const int highLife = 30;
 const int playerLowLife = 50;
 const int playerMedianLife = 100;
 const int playerHighLife = 150;
+const int playerSuperLife = 300;
 
 
 const int shortShootInterval = 100;
@@ -123,6 +124,11 @@ enum Key//键盘控制
 	Key_UP = 'W', Key_LEFT = 'A', Key_RIGHT = 'D', Key_DOWN = 'S',
 	Key_SHOOT = 'J', Key_PAUSE = 'P',
 	Key_START = 'F', Key_SELECT = 'R'
+};
+
+enum Effect
+{
+	SPEED_UP_LV1, SPEED_UP_LV2, SLOW_SPEED, STRONGER_ARMOR_LV1, STRONGER_ARMOR_LV2, STRONGER_ARMOR_LV3
 };
 
 /*************

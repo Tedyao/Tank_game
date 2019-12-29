@@ -1,7 +1,7 @@
 #include "Commander.h"
 
 Commander::Commander(int life, int shootInterval, int speed)
-	:Class_Player(26, 14, COMMANDER, NORMAL, UP, life, shootInterval, speed), status(0)
+	:Class_Player(26, 14, COMMANDER, NORMAL, UP, shootInterval, speed), status(0)
 {
 	load();
 }
